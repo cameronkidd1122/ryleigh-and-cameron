@@ -18,6 +18,7 @@
 </style></head><body><main class="admin-shell"><a class="admin-back" href="./index.html">← Back to our wedding</a>
 <section id="login-panel" class="rsvp-card login-panel"><h1>Ryleigh &amp; Cameron</h1><form id="login-form"><div class="form-field"><label class="form-label" for="email">Email</label><input class="form-input" id="email" type="email" autocomplete="username" required></div><div class="form-field"><label class="form-label" for="password">Password</label><input class="form-input" id="password" type="password" autocomplete="current-password" required></div><p class="form-error" id="login-error" role="alert" hidden></p><button class="submit-rsvp" id="sign-in" type="submit">Sign in</button></form></section>
 <section id="dashboard" hidden><div class="admin-top"><div><p class="eyebrow">Ryleigh &amp; Cameron</p><h1 id="dashboard-title" tabindex="-1">Your wedding RSVPs</h1></div><div class="admin-actions"><button type="button" id="refresh">Refresh</button><button type="button" class="primary" id="export">Export Excel</button><button type="button" id="sign-out">Sign out</button></div></div>
+<div class="admin-actions" style="margin-bottom:24px"><p id="rsvp-setting-status" role="status">Loading RSVP availability…</p><button type="button" id="toggle-rsvps" disabled>Close RSVPs</button></div>
 <div class="stats-grid" aria-label="RSVP totals"><div class="stat-card"><span>Total responses</span><strong id="total-count">0</strong></div><div class="stat-card"><span>Coming</span><strong id="coming-count">0</strong></div><div class="stat-card"><span>Not coming</span><strong id="declined-count">0</strong></div><div class="stat-card"><span>Not yet decided</span><strong id="undecided-count">0</strong></div></div>
 <p id="admin-error" role="alert" class="form-error" hidden></p><div class="form-field" id="search-wrap" hidden><label for="search" class="form-label">Find a guest</label><input id="search" type="search" class="form-input" placeholder="Search by name"></div>
 <section class="admin-table" aria-labelledby="submitted-title"><h2 id="submitted-title">RSVPs Submitted</h2><p id="no-matches" class="admin-empty" hidden>No matching guests</p><table id="guest-table" hidden><thead><tr><th scope="col">Guest name</th><th scope="col">RSVP</th><th scope="col">Last updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody id="response-rows"></tbody></table></section></section></main><script src="./config.js"></script><script>
@@ -33,7 +34,7 @@ async function api(path, { method = 'GET', body, token, headers = {} } = {}) {
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}), cache: 'no-store', signal: AbortSignal.timeout(20000)
   });
   const raw = await response.text(); let data; try { data = raw ? JSON.parse(raw) : null; } catch { throw new Error('The service returned an unexpected response. Please try again.'); }
-  if (!response.ok) { const error = new Error(response.status === 429 ? 'Too many requests. Please wait and try again.' : response.status === 401 ? 'Please sign in again.' : 'The request could not be completed. Please try again.'); error.status = response.status; throw error; }
+  if (!response.ok) { const error = new Error(response.status === 429 ? 'Too many requests. Please wait and try again.' : response.status === 401 ? 'Please sign in again.' : 'The request could not be completed. Please try again.'); error.status = response.status; error.code = data?.code; if (data?.message === 'RSVP is closed!') error.message = 'RSVP is closed!'; throw error; }
   return data;
 }
 function showMessage(id, text) { $(id).textContent = text; $(id).hidden = !text; }
@@ -92,8 +93,30 @@ function makeRsvpWorkbook(rows           ) {
   return zip(files);
 }
 
-let session = null, rows = [], actionBusy = false;
-function lock() { session = null; rows = []; $('dashboard').hidden = true; $('login-panel').hidden = false; $('response-rows').replaceChildren(); $('search').value = ''; showMessage('admin-error', ''); }
+let session = null, rows = [], actionBusy = false, rsvpsOpen = null;
+function renderRsvpSetting() {
+  $('rsvp-setting-status').textContent = rsvpsOpen === null ? 'RSVP availability could not be loaded. Use Refresh to retry.' : rsvpsOpen ? 'RSVPs are open' : 'RSVPs are closed';
+  $('toggle-rsvps').textContent = rsvpsOpen === false ? 'Open RSVPs' : 'Close RSVPs';
+  $('toggle-rsvps').disabled = actionBusy || rsvpsOpen === null;
+}
+async function loadRsvpSetting() {
+  rsvpsOpen = null; renderRsvpSetting();
+  const value = await api('/rest/v1/rpc/wedding_rsvps_open', {method:'POST', body:{}, token:token()});
+  if (typeof value !== 'boolean') throw new Error('RSVP availability could not be loaded.');
+  rsvpsOpen = value; renderRsvpSetting();
+}
+$('toggle-rsvps').addEventListener('click', async () => {
+  if (actionBusy || rsvpsOpen === null) return;
+  const next = !rsvpsOpen;
+  controls(true); showMessage('admin-error', '');
+  try {
+    const value = await api('/rest/v1/rpc/wedding_set_rsvps_open', {method:'POST', body:{p_open:next}, token:token()});
+    if (value !== next) throw new Error('The RSVP setting could not be confirmed. Use Refresh to check.');
+    rsvpsOpen = value;
+  } catch (error) { rsvpsOpen = null; showMessage('admin-error', error.message); }
+  finally { controls(false); }
+});
+function lock() { rsvpsOpen = null; renderRsvpSetting(); session = null; rows = []; $('dashboard').hidden = true; $('login-panel').hidden = false; $('response-rows').replaceChildren(); $('search').value = ''; showMessage('admin-error', ''); }
 function token() { if (!session || Date.now() >= session.expires) { lock(); showMessage('login-error', 'Please sign in again.'); throw new Error('Please sign in again.'); } return session.access; }
 async function allRows() {
   const access = token();
@@ -123,10 +146,10 @@ function render() {
     remove.addEventListener('click', () => removeRow(row)); actions.append(remove); tr.append(name, status, updated, actions); $('response-rows').append(tr);
   }
 }
-function controls(busy) { actionBusy = busy; $('refresh').disabled = busy; $('export').disabled = busy; render(); }
+function controls(busy) { actionBusy = busy; $('refresh').disabled = busy; $('export').disabled = busy; renderRsvpSetting(); render(); }
 async function refresh() {
   controls(true); showMessage('admin-error', '');
-  try { rows = await allRows(); render(); } catch(error) { showMessage('admin-error', error.message); if (!session) showMessage('login-error', error.message); }
+  try { rows = await allRows(); await loadRsvpSetting(); render(); } catch(error) { showMessage('admin-error', error.message); if (!session) showMessage('login-error', error.message); }
   finally { controls(false); }
 }
 $('login-form').addEventListener('submit', async event => {
@@ -134,7 +157,7 @@ $('login-form').addEventListener('submit', async event => {
   try {
     const auth = await api('/auth/v1/token?grant_type=password', {method:'POST', body:{email:$('email').value.trim(), password:$('password').value}});
     session = {access:auth.access_token, expires:Date.now() + auth.expires_in * 1000 - 30000};
-    rows = await allRows(); $('password').value = ''; $('login-panel').hidden = true; $('dashboard').hidden = false; render(); $('dashboard-title').focus();
+    rows = await allRows(); $('password').value = ''; $('login-panel').hidden = true; $('dashboard').hidden = false; render(); $('dashboard-title').focus(); try { await loadRsvpSetting(); } catch (error) { showMessage('admin-error', error.message); }
   } catch(error) { lock(); showMessage('login-error', error.status === 400 ? 'Check your email and password.' : error.message); }
   finally { $('sign-in').disabled = false; }
 });

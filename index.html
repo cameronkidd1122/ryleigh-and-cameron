@@ -32,7 +32,7 @@
           <p class="hero-place">The Little Chapel at Haven Ridge</p>
           <a class="button-primary hero-rsvp" href="#rsvp">Kindly RSVP</a>
         </div>
-        <p class="invitation-bottom">With the people we love most.</p>
+        
       </section>
       <section id="wedding-details" class="details-section section-wrap" aria-labelledby="details-title">
         <div class="section-intro"><p class="eyebrow">A day to remember</p><h2 id="details-title">Come celebrate<br /><em>with us.</em></h2></div>
@@ -44,7 +44,7 @@
       <section id="colors" class="colors-section section-wrap" aria-labelledby="colors-title"><div><p class="eyebrow">A few finishing touches</p><h2 id="colors-title">Our wedding colors</h2></div><p>We’re still choosing our colors.<br />We’ll share them here once they’re decided.</p></section>
       <section id="rsvp" class="rsvp-section" aria-labelledby="rsvp-title"><div class="section-wrap rsvp-layout">
         <div class="rsvp-intro"><p class="eyebrow">You’re part of our story</p><h2 id="rsvp-title">Will you<br /><em>join us?</em></h2><p>We’d love to celebrate with you.</p><div class="rsvp-signature">With love,<br /><span>Ryleigh & Cameron</span></div></div>
-        <form id="rsvp-form" class="rsvp-card" aria-label="Wedding RSVP">
+        <div id="rsvp-availability" class="rsvp-card form-success" role="status"><h3 id="rsvp-availability-text">Loading RSVPs…</h3><button type="button" id="retry-availability" class="small-button" hidden>Try again</button></div><form id="rsvp-form" class="rsvp-card" aria-label="Wedding RSVP" hidden>
 <div class="form-field"><label class="form-label" for="guest-name">Your full name</label><input id="guest-name" class="form-input" name="full_name" autocomplete="name" placeholder="First and last name" maxlength="120" minlength="2" required></div>
 <fieldset class="form-field"><legend class="form-label">Will you be joining us?</legend><div class="choice-list">
 <label class="choice"><input type="radio" name="attendance" value="coming" required><span>Yes, I’ll be there</span></label>
@@ -70,15 +70,40 @@ async function api(path, { method = 'GET', body, token, headers = {} } = {}) {
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}), cache: 'no-store', signal: AbortSignal.timeout(20000)
   });
   const raw = await response.text(); let data; try { data = raw ? JSON.parse(raw) : null; } catch { throw new Error('The service returned an unexpected response. Please try again.'); }
-  if (!response.ok) { const error = new Error(response.status === 429 ? 'Too many requests. Please wait and try again.' : response.status === 401 ? 'Please sign in again.' : 'The request could not be completed. Please try again.'); error.status = response.status; throw error; }
+  if (!response.ok) { const error = new Error(response.status === 429 ? 'Too many requests. Please wait and try again.' : response.status === 401 ? 'Please sign in again.' : 'The request could not be completed. Please try again.'); error.status = response.status; error.code = data?.code; if (data?.message === 'RSVP is closed!') error.message = 'RSVP is closed!'; throw error; }
   return data;
 }
 function showMessage(id, text) { $(id).textContent = text; $(id).hidden = !text; }
 
 const form = $('rsvp-form');
-let credentials = null, busy = false;
+let credentials = null, busy = false, rsvpsOpen = null, submitted = false, availabilityVersion = 0;
+function renderAvailability(message = '') {
+  form.hidden = rsvpsOpen !== true || submitted;
+  $('rsvp-success').hidden = rsvpsOpen !== true || !submitted;
+  $('rsvp-availability').hidden = rsvpsOpen === true;
+  $('rsvp-availability-text').textContent = rsvpsOpen === false ? 'RSVP is closed!' : message || 'Loading RSVPs…';
+  $('retry-availability').hidden = rsvpsOpen !== null || !message;
+  $('send-rsvp').disabled = busy || rsvpsOpen !== true;
+}
+async function checkAvailability() {
+  const version = ++availabilityVersion;
+  try {
+    const value = await api('/rest/v1/rpc/wedding_rsvps_open', {method:'POST', body:{}});
+    if (typeof value !== 'boolean') throw new Error('Invalid availability');
+    if (version !== availabilityVersion) return rsvpsOpen === true;
+    rsvpsOpen = value; renderAvailability(); return value;
+  } catch {
+    if (version === availabilityVersion) { rsvpsOpen = null; renderAvailability('RSVPs are temporarily unavailable. Please try again.'); }
+    return false;
+  }
+}
+$('retry-availability').addEventListener('click', checkAvailability);
+checkAvailability();
+setInterval(() => { if (!document.hidden && !busy) checkAvailability(); }, 30000);
+addEventListener('focus', () => { if (!busy) checkAvailability(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !busy) checkAvailability(); });
 form.addEventListener('submit', async event => {
-  event.preventDefault(); if (busy) return;
+  event.preventDefault(); if (busy || rsvpsOpen !== true) return;
   showMessage('rsvp-error', '');
   const fullName = cleanName($('guest-name').value);
   const choice = form.querySelector('input[name="attendance"]:checked');
@@ -90,11 +115,11 @@ form.addEventListener('submit', async event => {
     const saved = await api('/rest/v1/rpc/wedding_submit_rsvp', { method: 'POST', body: { p_id: credentials.id, p_token: credentials.token, p_name: fullName, p_status: choice.value, p_website: '' } });
     if (!saved || saved.full_name !== fullName || saved.status !== choice.value) throw new Error('Your RSVP could not be confirmed. Please try again.');
     $('saved-name').textContent = saved.full_name; $('saved-status').textContent = statusLabels[saved.status];
-    $('guest-name').value = saved.full_name; form.hidden = true; $('rsvp-success').hidden = false; $('success-title').focus();
-  } catch (error) { showMessage('rsvp-error', error.name === 'TypeError' || error.name === 'TimeoutError' ? 'We couldn’t confirm your RSVP. Please retry; this page will reuse your response.' : error.message); }
-  finally { busy = false; $('send-rsvp').disabled = false; $('send-rsvp').textContent = 'Send RSVP'; form.setAttribute('aria-busy', 'false'); }
+    $('guest-name').value = saved.full_name; submitted = true; renderAvailability(); if (rsvpsOpen === true) $('success-title').focus();
+  } catch (error) { if (error.message === 'RSVP is closed!') { ++availabilityVersion; rsvpsOpen = false; renderAvailability(); } else showMessage('rsvp-error', error.name === 'TypeError' || error.name === 'TimeoutError' ? 'We couldn’t confirm your RSVP. Please retry; this page will reuse your response.' : error.message); }
+  finally { busy = false; $('send-rsvp').disabled = rsvpsOpen !== true; $('send-rsvp').textContent = 'Send RSVP'; form.setAttribute('aria-busy', 'false'); }
 });
-$('another-guest').addEventListener('click', () => { credentials = null; form.reset(); showMessage('rsvp-error', ''); $('rsvp-success').hidden = true; form.hidden = false; $('guest-name').focus(); });
-$('edit-response').addEventListener('click', () => { $('rsvp-success').hidden = true; form.hidden = false; $('guest-name').focus(); });
+$('another-guest').addEventListener('click', async () => { if (!(await checkAvailability())) return; credentials = null; form.reset(); showMessage('rsvp-error', ''); submitted = false; renderAvailability(); $('guest-name').focus(); });
+$('edit-response').addEventListener('click', async () => { if (!(await checkAvailability())) return; submitted = false; renderAvailability(); $('guest-name').focus(); });
 
 </script></body></html>
