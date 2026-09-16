@@ -25,11 +25,20 @@
 @media(max-width:600px){.pet-companion{width:54px;height:54px}.pet-companion--dog{width:70px;height:70px}.pet-toggle{min-height:40px}}
 @media(prefers-reduced-motion:reduce){.pet-companion{will-change:auto}}
 @media print{.pet-companions,.pet-toggle{display:none!important}}
+.site-header nav{gap:26px}.site-header nav a[aria-current=page]{text-decoration:underline;text-underline-offset:7px}
+.footer-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 25px}.footer-nav a{font-size:.875rem;padding:7px 0}
+.rsvp-box{position:relative;min-width:0}.rsvp-snake{position:absolute;width:110px;height:110px;right:-15px;top:-76px;z-index:2;pointer-events:none;user-select:none;transform-origin:57% 8%;animation:snake-sway 6s ease-in-out infinite;will-change:transform}
+@keyframes snake-sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.page-content{max-width:1000px;margin:0 auto;padding:76px 40px 95px;min-height:65vh}.page-heading{max-width:620px;margin-bottom:45px}.page-heading .eyebrow{margin-bottom:14px}.page-heading h1{font-size:clamp(2.8rem,6vw,4.4rem);line-height:1.1;letter-spacing:-.045em;margin-bottom:20px}.page-heading>p:last-child{color:#63725b}
+.rules-list{list-style:none;margin:0;padding:0;counter-reset:rules}.rules-list li{counter-increment:rules;display:grid;grid-template-columns:44px 1fr;gap:24px;border-top:1px solid var(--border);padding:28px 0}.rules-list li:before{content:counter(rules,decimal-leading-zero);font-family:Georgia,serif;font-size:1.3rem;color:#7a865e}.rules-list h2{font-size:1.65rem;letter-spacing:-.02em;margin:0 0 10px}.rules-list p{margin:0;max-width:680px;color:#52604b}.contact-links{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:14px}.contact-links a{white-space:nowrap}
+.registry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.registry-card{padding:28px;background:var(--card);border:1px solid var(--border);min-width:0;overflow-wrap:anywhere}.registry-card h2{font-size:1.7rem;letter-spacing:-.02em;margin-bottom:14px}.registry-description{white-space:pre-line;color:#63725b;font-size:1rem;margin-bottom:4px}.registry-card .venue-link{margin-top:14px}.registry-empty{background:#edf0e9;border:1px solid var(--border);padding:30px;max-width:680px}.registry-manager{margin-top:44px;padding-top:32px;border-top:1px solid var(--border)}.registry-manager>h2{font-size:2rem;margin-bottom:12px}.registry-editor{margin:26px 0}.registry-editor h3{font-size:1.5rem}.registry-editor textarea{resize:vertical;font:inherit;min-height:110px}.registry-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.registry-editor .submit-rsvp{width:auto;padding:12px 25px}.registry-editor .registry-actions{align-items:center}.registry-success{color:#244d3d;background:#edf0e9;padding:12px 16px}.registry-manager .registry-grid{margin-top:24px}.registry-manager .registry-card h2{font-size:1.5rem}
+@media(max-width:760px){.site-header{display:block;padding:12px 22px}.site-header>.monogram{display:block;text-align:center;margin-bottom:6px}.site-header nav{justify-content:center;gap:5px 19px}.site-header nav a{min-height:38px;display:inline-flex;align-items:center;font-size:.82rem}.site-header nav .nav-rsvp{padding:5px 14px}.page-content{padding:50px 24px 64px}.page-heading{margin-bottom:30px}.registry-grid{grid-template-columns:1fr}.rules-list li{grid-template-columns:28px 1fr;gap:14px}.rsvp-box{margin-top:45px}.rsvp-snake{width:100px;height:100px;right:-12px;top:-69px}html{scroll-padding-top:150px}}
+@media(prefers-reduced-motion:reduce){.rsvp-snake{animation:none;will-change:auto}}
 </style></head><body>
     <a class="skip-link" href="#wedding-details">Skip to wedding details</a>
     <header class="site-header">
       <a class="monogram" href="#home" aria-label="Ryleigh and Cameron, home">R<span>&</span>C</a>
-      <nav aria-label="Wedding navigation"><a href="#wedding-details">The details</a><a href="#colors">Wedding colors</a><a class="nav-rsvp" href="#rsvp">RSVP</a></nav>
+      <nav aria-label="Wedding navigation"><a href="#wedding-details">The details</a><a href="#colors">Wedding colors</a><a href="./rules.html">Rules</a><a href="./registry.html">Registry</a><a class="nav-rsvp" href="#rsvp">RSVP</a></nav>
     </header>
     <main>
       <section id="home" class="invitation" aria-labelledby="couple-names">
@@ -45,16 +54,16 @@
         
       </section>
       <section id="wedding-details" class="details-section section-wrap" aria-labelledby="details-title">
-        <div class="section-intro"><p class="eyebrow">A day to remember</p><h2 id="details-title">Come celebrate<br /><em>with us.</em></h2></div>
+        <div class="section-intro"><p class="eyebrow">A day to remember</p><h2 id="details-title">Come celebrate <br /><em>with us.</em></h2></div>
         <div class="details-copy">
-          <div class="detail-row"><p class="detail-label">When</p><div><h3>Saturday, March 18, 2028</h3><p>We’ll share the ceremony time soon.</p></div></div>
+          <div class="detail-row"><p class="detail-label">When</p><div><h3>Saturday, March 18, 2028</h3><p>3:30 PM – 10:00 PM</p></div></div>
           <div class="detail-row venue-row"><p class="detail-label">Where</p><div><h3>The Little Chapel<br />at Haven Ridge</h3><p>Winston-Salem, North Carolina</p><a class="venue-link" href="https://www.thelittlechapelnc.com/" target="_blank" rel="noopener noreferrer">Explore the venue ↗<span class="sr-only"> (opens in a new tab)</span></a></div></div>
         </div>
       </section>
       <section id="colors" class="colors-section section-wrap" aria-labelledby="colors-title"><div><p class="eyebrow">A few finishing touches</p><h2 id="colors-title">Our wedding colors</h2></div><p>We’re still choosing our colors.<br />We’ll share them here once they’re decided.</p></section>
       <section id="rsvp" class="rsvp-section" aria-labelledby="rsvp-title"><div class="section-wrap rsvp-layout">
-        <div class="rsvp-intro"><p class="eyebrow">See us there!</p><h2 id="rsvp-title">Will you<br /><em> join us?</em></h2><p>We’d love to celebrate with you.</p><div class="rsvp-signature">With love,<br /><span>Ryleigh & Cameron</span></div></div>
-        <div id="rsvp-availability" class="rsvp-card form-success" role="status"><h3 id="rsvp-availability-text">Loading RSVPs…</h3><button type="button" id="retry-availability" class="small-button" hidden>Try again</button></div><form id="rsvp-form" class="rsvp-card" aria-label="Wedding RSVP" hidden>
+        <div class="rsvp-intro"><p class="eyebrow">See us there!</p><h2 id="rsvp-title">Will you <br /><em>join us?</em></h2><p>We’d love to celebrate with you.</p><div class="rsvp-signature">With love,<br /><span>Ryleigh & Cameron</span></div></div>
+        <div class="rsvp-box"><img class="rsvp-snake" src="./snake.png" width="110" height="110" alt="" aria-hidden="true" draggable="false"><div id="rsvp-availability" class="rsvp-card form-success" role="status"><h3 id="rsvp-availability-text">Loading RSVPs…</h3><button type="button" id="retry-availability" class="small-button" hidden>Try again</button></div><form id="rsvp-form" class="rsvp-card" aria-label="Wedding RSVP" hidden>
 <div class="form-field"><label class="form-label" for="guest-name">Your full name</label><input id="guest-name" class="form-input" name="full_name" autocomplete="name" placeholder="First and last name" maxlength="120" minlength="2" required></div>
 <fieldset class="form-field"><legend class="form-label">Will you be joining us?</legend><div class="choice-list">
 <label class="choice"><input type="radio" name="attendance" value="coming" required><span>Yes, I’ll be there</span></label>
@@ -63,10 +72,10 @@
 <div class="honeypot" aria-hidden="true"><label for="website">Leave empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
 <p id="rsvp-error" class="form-error" role="alert" hidden></p><button class="submit-rsvp" id="send-rsvp" type="submit">Send RSVP</button>
 <noscript><p>Enable JavaScript to send your RSVP.</p></noscript></form>
-<div id="rsvp-success" class="rsvp-card form-success" hidden><h3 id="success-title" tabindex="-1">Your RSVP is saved.</h3><div class="response-summary"><p id="saved-name"></p><strong id="saved-status"></strong></div><button type="button" id="another-guest" class="submit-rsvp">Respond for another guest</button><button type="button" id="edit-response" class="text-button">Edit this response</button></div>
+<div id="rsvp-success" class="rsvp-card form-success" hidden><h3 id="success-title" tabindex="-1">Your RSVP is saved.</h3><div class="response-summary"><p id="saved-name"></p><strong id="saved-status"></strong></div><button type="button" id="another-guest" class="submit-rsvp">Respond for another guest</button><button type="button" id="edit-response" class="text-button">Edit this response</button></div></div>
       </div></section>
     </main>
-    <footer class="site-footer"><a class="monogram" href="#home" aria-label="Back to top">R<span>&</span>C</a><p>March 18, 2028</p></footer>
+    <footer class="site-footer"><a class="monogram" href="#home" aria-label="Back to top">R<span>&</span>C</a><p>March 18, 2028</p><nav class="footer-nav" aria-label="Footer navigation"><a href="./index.html#wedding-details">The details</a><a href="./index.html#colors">Wedding colors</a><a href="./rules.html">Rules</a><a href="./registry.html">Registry</a><a href="./index.html#rsvp">RSVP</a></nav></footer>
   <script src="./config.js"></script><script>
 const statusLabels = { coming: 'Coming', declined: 'Not coming', undecided: 'Not yet decided' };
 function cleanName(value) { return value.normalize('NFKC').replace(/\s+/gu, ' ').trim(); }

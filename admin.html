@@ -25,13 +25,22 @@
 @media(max-width:600px){.pet-companion{width:54px;height:54px}.pet-companion--dog{width:70px;height:70px}.pet-toggle{min-height:40px}}
 @media(prefers-reduced-motion:reduce){.pet-companion{will-change:auto}}
 @media print{.pet-companions,.pet-toggle{display:none!important}}
+.site-header nav{gap:26px}.site-header nav a[aria-current=page]{text-decoration:underline;text-underline-offset:7px}
+.footer-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:12px 25px}.footer-nav a{font-size:.875rem;padding:7px 0}
+.rsvp-box{position:relative;min-width:0}.rsvp-snake{position:absolute;width:110px;height:110px;right:-15px;top:-76px;z-index:2;pointer-events:none;user-select:none;transform-origin:57% 8%;animation:snake-sway 6s ease-in-out infinite;will-change:transform}
+@keyframes snake-sway{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.page-content{max-width:1000px;margin:0 auto;padding:76px 40px 95px;min-height:65vh}.page-heading{max-width:620px;margin-bottom:45px}.page-heading .eyebrow{margin-bottom:14px}.page-heading h1{font-size:clamp(2.8rem,6vw,4.4rem);line-height:1.1;letter-spacing:-.045em;margin-bottom:20px}.page-heading>p:last-child{color:#63725b}
+.rules-list{list-style:none;margin:0;padding:0;counter-reset:rules}.rules-list li{counter-increment:rules;display:grid;grid-template-columns:44px 1fr;gap:24px;border-top:1px solid var(--border);padding:28px 0}.rules-list li:before{content:counter(rules,decimal-leading-zero);font-family:Georgia,serif;font-size:1.3rem;color:#7a865e}.rules-list h2{font-size:1.65rem;letter-spacing:-.02em;margin:0 0 10px}.rules-list p{margin:0;max-width:680px;color:#52604b}.contact-links{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:14px}.contact-links a{white-space:nowrap}
+.registry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.registry-card{padding:28px;background:var(--card);border:1px solid var(--border);min-width:0;overflow-wrap:anywhere}.registry-card h2{font-size:1.7rem;letter-spacing:-.02em;margin-bottom:14px}.registry-description{white-space:pre-line;color:#63725b;font-size:1rem;margin-bottom:4px}.registry-card .venue-link{margin-top:14px}.registry-empty{background:#edf0e9;border:1px solid var(--border);padding:30px;max-width:680px}.registry-manager{margin-top:44px;padding-top:32px;border-top:1px solid var(--border)}.registry-manager>h2{font-size:2rem;margin-bottom:12px}.registry-editor{margin:26px 0}.registry-editor h3{font-size:1.5rem}.registry-editor textarea{resize:vertical;font:inherit;min-height:110px}.registry-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.registry-editor .submit-rsvp{width:auto;padding:12px 25px}.registry-editor .registry-actions{align-items:center}.registry-success{color:#244d3d;background:#edf0e9;padding:12px 16px}.registry-manager .registry-grid{margin-top:24px}.registry-manager .registry-card h2{font-size:1.5rem}
+@media(max-width:760px){.site-header{display:block;padding:12px 22px}.site-header>.monogram{display:block;text-align:center;margin-bottom:6px}.site-header nav{justify-content:center;gap:5px 19px}.site-header nav a{min-height:38px;display:inline-flex;align-items:center;font-size:.82rem}.site-header nav .nav-rsvp{padding:5px 14px}.page-content{padding:50px 24px 64px}.page-heading{margin-bottom:30px}.registry-grid{grid-template-columns:1fr}.rules-list li{grid-template-columns:28px 1fr;gap:14px}.rsvp-box{margin-top:45px}.rsvp-snake{width:100px;height:100px;right:-12px;top:-69px}html{scroll-padding-top:150px}}
+@media(prefers-reduced-motion:reduce){.rsvp-snake{animation:none;will-change:auto}}
 </style></head><body><main class="admin-shell"><a class="admin-back" href="./index.html">← Back to our wedding</a>
 <section id="login-panel" class="rsvp-card login-panel"><h1>Ryleigh &amp; Cameron</h1><form id="login-form"><div class="form-field"><label class="form-label" for="email">Email</label><input class="form-input" id="email" type="email" autocomplete="username" required></div><div class="form-field"><label class="form-label" for="password">Password</label><input class="form-input" id="password" type="password" autocomplete="current-password" required></div><p class="form-error" id="login-error" role="alert" hidden></p><button class="submit-rsvp" id="sign-in" type="submit">Sign in</button></form></section>
 <section id="dashboard" hidden><div class="admin-top"><div><p class="eyebrow">Ryleigh &amp; Cameron</p><h1 id="dashboard-title" tabindex="-1">Your wedding RSVPs</h1></div><div class="admin-actions"><button type="button" id="refresh">Refresh</button><button type="button" class="primary" id="export">Export Excel</button><button type="button" id="sign-out">Sign out</button></div></div>
 <div class="admin-actions" style="margin-bottom:24px"><p id="rsvp-setting-status" role="status">Loading RSVP availability…</p><button type="button" id="toggle-rsvps" disabled>Close RSVPs</button></div>
 <div class="stats-grid" aria-label="RSVP totals"><div class="stat-card"><span>Total responses</span><strong id="total-count">0</strong></div><div class="stat-card"><span>Coming</span><strong id="coming-count">0</strong></div><div class="stat-card"><span>Not coming</span><strong id="declined-count">0</strong></div><div class="stat-card"><span>Not yet decided</span><strong id="undecided-count">0</strong></div></div>
 <p id="admin-error" role="alert" class="form-error" hidden></p><div class="form-field" id="search-wrap" hidden><label for="search" class="form-label">Find a guest</label><input id="search" type="search" class="form-input" placeholder="Search by name"></div>
-<section class="admin-table" aria-labelledby="submitted-title"><h2 id="submitted-title">RSVPs Submitted</h2><p id="no-matches" class="admin-empty" hidden>No matching guests</p><table id="guest-table" hidden><thead><tr><th scope="col">Guest name</th><th scope="col">RSVP</th><th scope="col">Last updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody id="response-rows"></tbody></table></section></section></main><script src="./config.js"></script><script>
+<section class="admin-table" aria-labelledby="submitted-title"><h2 id="submitted-title">RSVPs Submitted</h2><p id="no-matches" class="admin-empty" hidden>No matching guests</p><table id="guest-table" hidden><thead><tr><th scope="col">Guest name</th><th scope="col">RSVP</th><th scope="col">Last updated</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody id="response-rows"></tbody></table></section><section id="registry-manager" class="registry-manager" aria-labelledby="registry-manager-title"><h2 id="registry-manager-title">Your registry</h2><p>Add a name, description, and link. Saved changes appear on <a href="./registry.html" target="_blank" rel="noopener">your registry page</a>.</p><button id="registry-refresh" class="small-button" type="button">Refresh registry</button><form id="registry-form" class="rsvp-card registry-editor"><h3 id="registry-editor-title">Add a registry item</h3><input id="registry-id" type="hidden"><div class="form-field"><label class="form-label" for="registry-title">Item name</label><input id="registry-title" class="form-input" required maxlength="140"></div><div class="form-field"><label class="form-label" for="registry-description">Description</label><textarea id="registry-description" class="form-input" required maxlength="1200" rows="3"></textarea></div><div class="form-field"><label class="form-label" for="registry-url">Item link</label><input id="registry-url" class="form-input" type="url" placeholder="https://…" required maxlength="2048" inputmode="url" aria-describedby="registry-url-hint"><p id="registry-url-hint" class="form-hint">Paste the full https:// link to the item or registry.</p></div><div class="registry-actions"><button id="registry-save" class="submit-rsvp" type="submit">Add item</button><button id="registry-cancel" class="small-button" type="button" hidden>Cancel editing</button></div></form><p id="registry-admin-error" class="form-error" role="alert" hidden></p><p id="registry-admin-status" class="registry-success" role="status" hidden></p><p id="registry-admin-empty">No registry items yet.</p><div id="admin-registry-items" class="registry-grid"></div></section></section></main><script src="./config.js"></script><script>
 const statusLabels = { coming: 'Coming', declined: 'Not coming', undecided: 'Not yet decided' };
 function cleanName(value) { return value.normalize('NFKC').replace(/\s+/gu, ' ').trim(); }
 function duplicateNames(rows) { const counts = new Map(); for (const row of rows) counts.set(row.normalized_name, (counts.get(row.normalized_name) || 0) + 1); return new Set([...counts].filter(([, count]) => count > 1).map(([name]) => name)); }
@@ -103,6 +112,24 @@ function makeRsvpWorkbook(rows           ) {
   return zip(files);
 }
 
+function registryUrl(value) {
+  const text = value.trim();
+  if (text.length > 2048 || /\s/.test(text)) throw new Error('Enter a full https:// link without spaces.');
+  let url;
+  try { url = new URL(text); } catch { throw new Error('Enter a full https:// link for this item.'); }
+  if (url.protocol !== 'https:' || !url.hostname || url.username || url.password) throw new Error('Use an https:// link without a username or password.');
+  return url.href;
+}
+function registryCard(item) {
+  const card = document.createElement('article'); card.className = 'registry-card';
+  const title = document.createElement('h2'); title.textContent = item.title;
+  const description = document.createElement('p'); description.className = 'registry-description'; description.textContent = item.description;
+  const link = document.createElement('a'); link.className = 'venue-link'; link.textContent = 'View item ↗';
+  link.href = registryUrl(item.url); link.target = '_blank'; link.rel = 'noopener noreferrer';
+  link.setAttribute('aria-label', 'View ' + item.title + ' (opens in a new tab)');
+  card.append(title, description, link); return card;
+}
+
 let session = null, rows = [], actionBusy = false, rsvpsOpen = null;
 function renderRsvpSetting() {
   $('rsvp-setting-status').textContent = rsvpsOpen === null ? 'RSVP availability could not be loaded. Use Refresh to retry.' : rsvpsOpen ? 'RSVPs are open' : 'RSVPs are closed';
@@ -126,7 +153,7 @@ $('toggle-rsvps').addEventListener('click', async () => {
   } catch (error) { rsvpsOpen = null; showMessage('admin-error', error.message); }
   finally { controls(false); }
 });
-function lock() { rsvpsOpen = null; renderRsvpSetting(); session = null; rows = []; $('dashboard').hidden = true; $('login-panel').hidden = false; $('response-rows').replaceChildren(); $('search').value = ''; showMessage('admin-error', ''); }
+function lock() { clearRegistry(); rsvpsOpen = null; renderRsvpSetting(); session = null; rows = []; $('dashboard').hidden = true; $('login-panel').hidden = false; $('response-rows').replaceChildren(); $('search').value = ''; showMessage('admin-error', ''); }
 function token() { if (!session || Date.now() >= session.expires) { lock(); showMessage('login-error', 'Please sign in again.'); throw new Error('Please sign in again.'); } return session.access; }
 async function allRows() {
   const access = token();
@@ -159,7 +186,7 @@ function render() {
 function controls(busy) { actionBusy = busy; $('refresh').disabled = busy; $('export').disabled = busy; renderRsvpSetting(); render(); }
 async function refresh() {
   controls(true); showMessage('admin-error', '');
-  try { rows = await allRows(); await loadRsvpSetting(); render(); } catch(error) { showMessage('admin-error', error.message); if (!session) showMessage('login-error', error.message); }
+  try { rows = await allRows(); await loadRsvpSetting(); render(); await refreshRegistry(); } catch(error) { showMessage('admin-error', error.message); if (!session) showMessage('login-error', error.message); }
   finally { controls(false); }
 }
 $('login-form').addEventListener('submit', async event => {
@@ -167,7 +194,7 @@ $('login-form').addEventListener('submit', async event => {
   try {
     const auth = await api('/auth/v1/token?grant_type=password', {method:'POST', body:{email:$('email').value.trim(), password:$('password').value}});
     session = {access:auth.access_token, expires:Date.now() + auth.expires_in * 1000 - 30000};
-    rows = await allRows(); $('password').value = ''; $('login-panel').hidden = true; $('dashboard').hidden = false; render(); $('dashboard-title').focus(); try { await loadRsvpSetting(); } catch (error) { showMessage('admin-error', error.message); }
+    rows = await allRows(); $('password').value = ''; $('login-panel').hidden = true; $('dashboard').hidden = false; render(); $('dashboard-title').focus(); try { await loadRsvpSetting(); } catch (error) { showMessage('admin-error', error.message); } await refreshRegistry();
   } catch(error) { lock(); showMessage('login-error', error.status === 400 ? 'Check your email and password.' : error.message); }
   finally { $('sign-in').disabled = false; }
 });
@@ -190,5 +217,84 @@ $('export').addEventListener('click', async () => {
 });
 setInterval(() => { if (session && Date.now() >= session.expires) { lock(); showMessage('login-error', 'Please sign in again.'); } }, 15000);
 addEventListener('pagehide', lock);
+
+let registryItems = [], registryBusy = false, registryEpoch = 0;
+function resetRegistryEditor() {
+  $('registry-form').reset(); $('registry-id').value = '';
+  $('registry-editor-title').textContent = 'Add a registry item';
+  $('registry-save').textContent = 'Add item'; $('registry-cancel').hidden = true;
+}
+function clearRegistry() {
+  registryEpoch++; registryBusy = false; registryItems = [];
+  $('admin-registry-items').replaceChildren(); resetRegistryEditor();
+  registryControls(false); showMessage('registry-admin-error',''); showMessage('registry-admin-status','');
+}
+function registryControls(busy) {
+  registryBusy = busy;
+  for (const control of document.querySelectorAll('#registry-manager input, #registry-manager textarea, #registry-manager button')) control.disabled = busy;
+}
+function renderAdminRegistry() {
+  $('admin-registry-items').replaceChildren();
+  for (const item of registryItems) {
+    const card = registryCard(item); const actions = document.createElement('div'); actions.className = 'registry-actions';
+    const edit = document.createElement('button'); edit.type = 'button'; edit.className = 'small-button'; edit.textContent = 'Edit';
+    edit.setAttribute('aria-label', 'Edit ' + item.title);
+    edit.addEventListener('click', () => {
+      if (registryBusy) return;
+      $('registry-id').value = item.id; $('registry-title').value = item.title; $('registry-description').value = item.description; $('registry-url').value = item.url;
+      $('registry-editor-title').textContent = 'Edit registry item'; $('registry-save').textContent = 'Save changes'; $('registry-cancel').hidden = false;
+      showMessage('registry-admin-error',''); showMessage('registry-admin-status',''); $('registry-title').focus();
+    });
+    const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'small-button'; remove.textContent = 'Remove';
+    remove.setAttribute('aria-label', 'Remove ' + item.title);
+    remove.addEventListener('click', () => removeRegistryItem(item));
+    actions.append(edit,remove); card.append(actions); $('admin-registry-items').append(card);
+  }
+  $('registry-admin-empty').hidden = !!registryItems.length;
+}
+async function loadAdminRegistry() {
+  const epoch = registryEpoch;
+  const items = await api('/rest/v1/rpc/wedding_registry_items', {method:'POST',body:{},token:token()});
+  if (epoch !== registryEpoch || !session) return;
+  if (!Array.isArray(items)) throw new Error('Registry items could not be loaded.');
+  registryItems = items; renderAdminRegistry(); registryControls(registryBusy);
+}
+async function refreshRegistry() {
+  if (registryBusy) return;
+  const epoch = registryEpoch; registryControls(true); showMessage('registry-admin-error','');
+  try { await loadAdminRegistry(); }
+  catch(error) { if (epoch === registryEpoch) showMessage('registry-admin-error',error.message); }
+  finally { if (epoch === registryEpoch) registryControls(false); }
+}
+$('registry-form').addEventListener('submit', async event => {
+  event.preventDefault(); if (registryBusy) return;
+  let body;
+  try {
+    body = {p_id:$('registry-id').value || null,p_title:$('registry-title').value.trim(),p_description:$('registry-description').value.trim(),p_url:registryUrl($('registry-url').value)};
+    if (!body.p_title || !body.p_description) throw new Error('Add an item name and description.');
+  } catch(error) { showMessage('registry-admin-error',error.message); return; }
+  const epoch = registryEpoch; registryControls(true); showMessage('registry-admin-error',''); showMessage('registry-admin-status','');
+  try {
+    const saved = await api('/rest/v1/rpc/wedding_save_registry_item', {method:'POST',body,token:token()});
+    if (epoch !== registryEpoch || !session) return;
+    if (typeof saved !== 'string') throw new Error('The item could not be confirmed. Refresh the list before retrying.');
+    resetRegistryEditor(); showMessage('registry-admin-status','Saved! Your registry page is updated.');
+    await loadAdminRegistry();
+  } catch(error) { if (epoch === registryEpoch) showMessage('registry-admin-error',error.message); }
+  finally { if (epoch === registryEpoch) registryControls(false); }
+});
+async function removeRegistryItem(item) {
+  if (registryBusy || !confirm('Remove “' + item.title + '” from your registry?')) return;
+  const epoch = registryEpoch; registryControls(true); showMessage('registry-admin-error',''); showMessage('registry-admin-status','');
+  try {
+    await api('/rest/v1/rpc/wedding_remove_registry_item', {method:'POST',body:{p_id:item.id},token:token()});
+    if (epoch !== registryEpoch || !session) return;
+    if ($('registry-id').value === item.id) resetRegistryEditor();
+    showMessage('registry-admin-status','Item removed from your registry.'); await loadAdminRegistry();
+  } catch(error) { if (epoch === registryEpoch) showMessage('registry-admin-error',error.message); }
+  finally { if (epoch === registryEpoch) registryControls(false); }
+}
+$('registry-cancel').addEventListener('click', resetRegistryEditor);
+$('registry-refresh').addEventListener('click', refreshRegistry);
 
 </script><script src="./pets-v5.js" defer></script></body></html>
