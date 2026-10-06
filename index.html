@@ -78,7 +78,7 @@
       </div></section>
     </main>
     <footer class="site-footer"><a class="monogram" href="#home" aria-label="Back to top">R<span>&</span>C</a><p>March 18, 2028</p><nav class="footer-nav" aria-label="Footer navigation"><a href="./index.html#wedding-details">The details</a><a href="./index.html#colors">Wedding colors</a><a href="./rules.html">Rules</a><a href="./registry.html">Registry</a><a href="./index.html#rsvp">RSVP</a></nav></footer>
-  <script src="./rsvp-playful-v1.js" defer></script><script src="./config.js"></script><script>
+  <script src="./rsvp-playful-v2.js" defer></script><script src="./config.js"></script><script>
 const statusLabels = { coming: 'Coming', declined: 'Not coming', undecided: 'Not yet decided' };
 function cleanName(value) { return value.normalize('NFKC').replace(/\s+/gu, ' ').trim(); }
 function duplicateNames(rows) { const counts = new Map(); for (const row of rows) counts.set(row.normalized_name, (counts.get(row.normalized_name) || 0) + 1); return new Set([...counts].filter(([, count]) => count > 1).map(([name]) => name)); }
